@@ -101,8 +101,8 @@ class NonStockedProduct(Product):
         return f"{self.name}, Price: ${self.price}, Quantity: Unlimited, Promotion: {promotion_info}"
 
     @property
-    def quantity(self):
-        """Overrides get_quantity to always return 0."""
+    def quantity(self   ):
+        """Always returns 0, as this product is 'unlimited'."""
         return 0
 
     @quantity.setter
@@ -122,7 +122,6 @@ class NonStockedProduct(Product):
             raise InvalidQuantityError()
 
         total_price = (self.promotion.apply_promotion(self, quantity) if self.promotion else self.price * quantity)
-        self._quantity = 0
         return total_price
 
 
