@@ -1,5 +1,6 @@
 import pytest
-from products import Product , InsufficientStockError, InvalidQuantityError
+from products import Product , InsufficientStockError, NonStockedProduct, LimitedProduct
+from promotions import SecondHalfPrice ,ThirdOneFree
 
 
 def test_creating_prod():
@@ -58,3 +59,40 @@ def test_buy_too_much():
         prod = Product("MacBook Air M2", price=10, quantity=10)
         prod_num_buy = 11
         prod.buy(prod_num_buy)
+
+
+def test_check_instance_second_half_price():
+    """
+    Test that creates a SecondHalfPrice promotion is added to product.
+    """
+    second_half_price = SecondHalfPrice("Second Half price!")
+    assert isinstance(second_half_price, SecondHalfPrice)
+
+
+def test_check_instance_third_one_free():
+    """
+    Test that creates a ThirdHalfPrice promotion is added to product.
+    """
+    third_one_free = ThirdOneFree("Third One Free!")
+    assert isinstance(third_one_free, ThirdOneFree)
+
+
+def test_quantity_for_non_stocked_product():
+    """
+    Test that quantity is 0 for NonStockedProduct
+    """
+    prod = NonStockedProduct("Windows License", price=125)
+    assert (prod.quantity == 0)
+
+
+def test_quantity_for_limited_product():
+    """
+    Test that checks the maximum limit for quantity"
+    """
+    with pytest.raises(ValueError, match="Only 1 is allowed from this prod"):
+        prod = LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+        second_half_price = SecondHalfPrice("Second Half price!")
+        prod.promotion = second_half_price
+        prod.buy(5)
+
+
