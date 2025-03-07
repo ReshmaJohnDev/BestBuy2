@@ -1,6 +1,8 @@
+import sys
 import products
 import store
-import sys
+import promotions
+
 
 # ANSI color codes for styling
 BRIGHT_CYAN = '\033[96m'
@@ -35,7 +37,7 @@ def start(best_buy):
             else:
                 print(f"{RED}Invalid input. Please enter valid number.{RESET}\n")
                 continue
-        except ValueError :
+        except ValueError:
             print(f"{RED}Please enter a valid choice{RESET}\n")
 
         except products.InvalidQuantityError as error_message:
@@ -75,13 +77,11 @@ def process_order(best_buy, store_available_product_list):
 
 
 def list_products(best_buy):
-    """Displays all available products"""
+    """Displays all available products in the store"""
     product_list = best_buy.get_all_products()
     print('_' * 10)
     for index, product in enumerate(product_list):
-        print(f"{BRIGHT_GREEN}{index + 1}{RESET}. {BRIGHT_CYAN}{product.name}{RESET},"
-              f" Price: {BRIGHT_CYAN}{product.price}{RESET},"
-              f" Quantity: {BRIGHT_CYAN}{product.quantity}{RESET}")
+        print(f"{BRIGHT_GREEN}{index + 1}{RESET}. {product.show()}")
     print('_' * 10)
     print()
 
@@ -96,23 +96,41 @@ def get_total_products(best_buy):
 def make_order(best_buy, buy_list):
     """Processes the order and displays the total price."""
     total_price = best_buy.order(buy_list)
-    print(f"Order made! Total payment: {BRIGHT_GREEN}${total_price}{RESET}")
+    if total_price > 0:
+        print(f"Order made! Total payment: {BRIGHT_GREEN}${total_price}{RESET}")
+    else:
+        print(f"{RED}Order failed. No payment was processed due to above error.{RESET}")
 
 
 def main():
     """Initializes store products and handles user choices """
     #setup initial stock of inventory
     try:
+        # setup initial stock of inventory
+
         product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
-                        products.Product("MacBook Air M2", price=1450, quantity=100),
                         products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                        products.Product("Google Pixel 7", price=500, quantity=250)
-                    ]
+                        products.Product("Google Pixel 7", price=500, quantity=250),
+                        products.NonStockedProduct("Windows License", price=125),
+                        products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+                        ]
 
         best_buy = store.Store([])
         for product in product_list:
             #checks for duplicates and adds products
             best_buy.add_product(product)
+
+        # Create promotion catalog
+        second_half_price = promotions.SecondHalfPrice("Second Half price!")
+        third_one_free = promotions.ThirdOneFree("Third One Free!")
+        thirty_percent = promotions.PercentDiscount("30% off!", percent=30)
+
+        # Add promotions to products
+        product_list[0].promotion = second_half_price
+        product_list[1].promotion = third_one_free
+        product_list[3].promotion = thirty_percent
+
+        #invoke start method
         start(best_buy)
     except ValueError as error_message:
         print(f"{RED}{error_message}{RESET}")

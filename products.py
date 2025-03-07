@@ -98,7 +98,7 @@ class NonStockedProduct(Product):
     def show(self):
         """Overrides the show method to display 'Unlimited' for quantity."""
         promotion_info = f", Promotion: {self.promotion.name}" if self.promotion else ""
-        return f"{self.name}, Price: {self.price}, Quantity: Unlimited, Promotion: {promotion_info}"
+        return f"{self.name}, Price: ${self.price}, Quantity: Unlimited, Promotion: {promotion_info}"
 
     @property
     def quantity(self):
@@ -134,7 +134,7 @@ class LimitedProduct(Product):
     def show(self):
         """Overrides the show method to display 'Unlimited' for quantity."""
         promotion_info = f", Promotion: {self.promotion.name}" if self.promotion else None
-        return (f"{self.name}, Price: {self.price},"
+        return (f"{self.name}, Price: ${self.price},"
                 f" Limited to {self.maximum} per order!,"
                 f" Promotion: {promotion_info}")
 
