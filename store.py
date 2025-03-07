@@ -1,3 +1,5 @@
+from products import NonStockedProduct
+
 class Store:
     """Store Class will hold all the products,
      and will allow the user to make a purchase of
@@ -48,6 +50,8 @@ class Store:
                     self.product_list[idx].rollback_quantity()
                 return 0
         for product in products_to_remove:
+            if isinstance(product, NonStockedProduct) or product.quantity > 0:
+                continue
             self.remove_product(product)
         return total_price
 
