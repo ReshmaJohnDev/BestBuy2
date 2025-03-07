@@ -54,8 +54,10 @@ class Product:
 
     def show(self):
         """Returns a string that represents the product"""
-        promotion_info = f", Promotion: {self.promotion.name}" if self.promotion else None
-        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity}, Promotion: {promotion_info}"
+        promotion_info = f"Promotion: {self.promotion.name}"\
+            if self.promotion else "Promotion: None"
+        return (f"{self.name}, Price: ${self.price},"
+                f" Quantity: {self.quantity}, {promotion_info}")
 
     def buy(self, quantity):
         """
@@ -69,7 +71,8 @@ class Product:
         elif quantity > self.quantity:
             raise InsufficientStockError()
 
-        total_price = (self.promotion.apply_promotion(self, quantity) if self.promotion else self.price * quantity)
+        total_price = (self.promotion.apply_promotion(self, quantity)
+                       if self.promotion else self.price * quantity)
         self.quantity -= quantity
         return total_price
 
@@ -97,8 +100,10 @@ class NonStockedProduct(Product):
 
     def show(self):
         """Overrides the show method to display 'Unlimited' for quantity."""
-        promotion_info = f", Promotion: {self.promotion.name}" if self.promotion else ""
-        return f"{self.name}, Price: ${self.price}, Quantity: Unlimited, Promotion: {promotion_info}"
+        promotion_info = f"Promotion: {self.promotion.name}"\
+            if self.promotion else "Promotion:None"
+        return (f"{self.name}, Price: ${self.price},"
+                f" Quantity: Unlimited, {promotion_info}")
 
     @property
     def quantity(self   ):
@@ -121,7 +126,8 @@ class NonStockedProduct(Product):
         if quantity <= 0:
             raise InvalidQuantityError()
 
-        total_price = (self.promotion.apply_promotion(self, quantity) if self.promotion else self.price * quantity)
+        total_price = (self.promotion.apply_promotion(self, quantity)
+                       if self.promotion else self.price * quantity)
         return total_price
 
 
@@ -132,10 +138,11 @@ class LimitedProduct(Product):
 
     def show(self):
         """Overrides the show method to display 'Unlimited' for quantity."""
-        promotion_info = f", Promotion: {self.promotion.name}" if self.promotion else None
+        promotion_info = f"Promotion: {self.promotion.name}" \
+            if self.promotion else "Promotion: None"
         return (f"{self.name}, Price: ${self.price},"
                 f" Limited to {self.maximum} per order!,"
-                f" Promotion: {promotion_info}")
+                f" {promotion_info}")
 
     def buy(self, quantity):
         """Overrides the buy method to update the quantity
@@ -144,7 +151,7 @@ class LimitedProduct(Product):
             raise InvalidQuantityError()
         elif quantity > self.maximum:
             raise ValueError(f"Only {self.maximum} is allowed from this prod")
-        total_price = (self.promotion.apply_promotion(self, quantity) if self.promotion else self.price * quantity)
+        total_price = (self.promotion.apply_promotion(self, quantity)
+                       if self.promotion else self.price * quantity)
         self.quantity -= quantity
         return total_price
-
