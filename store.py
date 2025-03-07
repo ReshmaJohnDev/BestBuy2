@@ -8,7 +8,6 @@ class Store:
         """Initiator (constructor) method."""
         self.product_list = product_list
 
-
     def add_product(self, product):
         """Adds a product to the store.Checks for duplicates"""
         if not any(p.name == product.name and p.price == product.price and
@@ -21,11 +20,9 @@ class Store:
         if product in self.product_list:
             self.product_list.remove(product)
 
-
     def get_total_quantity(self):
         """ Returns total quantity of products available in store"""
         return sum(product.quantity for product in self.product_list)
-
 
     def order(self, shopping_list):
         """Process the order , update the quantity and return total price"""
@@ -54,7 +51,6 @@ class Store:
                 continue
             self.remove_product(product)
         return total_price
-
 
     def get_all_products(self):
         """Gets all the active products"""
